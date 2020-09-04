@@ -14,6 +14,55 @@ type Userprocess struct {
 	Uid int
 }
 
+
+// 通知用户在线
+func (this *Userprocess) NotifyOtherUserOnline(userid int) {
+	for id, up := range userlist.Users {
+		if id == userid {
+			continue
+		}
+		up.OnlineNotify(userid)
+	}
+
+}
+
+func (this *Userprocess) OnlineNotify(userid int) {
+	//
+	var mes base.Message
+	mes.MessType = base.OnlineNotifyType
+
+	var notify base.UserOnlineNotify
+	notify.Userid = userid
+	notify.Userstatus = base.UserOnline
+
+	data, err := json.Marshal(notify)
+	if err != nil {
+		fmt.Println("通知序列化失败，错误：", err)
+		return
+	}
+
+	mes.MessData = string(data)
+
+	data, err = json.Marshal(mes)
+	if err != nil {
+		fmt.Println("通知消息序列化失败，错误：", err)
+		return
+	}
+
+	tf := &utils.Transfer{
+		Con : this.Con,
+
+	}
+
+	err = tf.SendMessage(data)
+	if err != nil {
+		fmt.Println("在线通知发送失败，错误：", err)
+		return
+	}
+
+
+}
+
 // 注册用户
 func (this *Userprocess) RegistUser(mess base.Message) (err error) {
 	//
@@ -108,6 +157,7 @@ func (this *Userprocess) CheckLogin(mess base.Message) (err error) {
 
 
 		}
+		this.NotifyOtherUserOnline(loginInfo.UserId)
 		fmt.Println("当前登录用户信息：", user)
 	}
 

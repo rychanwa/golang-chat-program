@@ -15,6 +15,8 @@ type Processor struct {
 }
 // 按照类型处理消息
 func (this *Processor) OperaMessage(mess base.Message) (err error) {
+	// fmt.Println("测试消息内容：", mess)
+
 	switch mess.MessType {
 		case base.LoginType:
 
@@ -29,6 +31,11 @@ func (this *Processor) OperaMessage(mess base.Message) (err error) {
 				Con : this.Con,
 			}
 			up.RegistUser(mess)
+
+		case base.SmsType:
+			// 群发消息
+			up := &cprocess.GroupSms{}
+			up.SendGroupMes(mess)
 
 
 

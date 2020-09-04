@@ -12,6 +12,14 @@ const (
 	RegisterType = "reg"
 	RegisterresType = "regres"
 
+	OnlineNotifyType = "onlineuserstatus"
+	SmsType = "sms"
+
+)
+
+const (
+	UserOnline = iota
+	UserOffline
 )
 
 // 消息结构体
@@ -39,4 +47,14 @@ type RegisterUser struct {
 type RegRes struct {
 	Code int `json:"code"` // 状态码
 	Error string `json:"error"` // 返回错误信息
+}
+
+type UserOnlineNotify struct {
+	Userid int `json:"userid"`
+	Userstatus int `json:"userstatus"`
+}
+
+type Sms struct {
+	SmsCon string `json:"smscontent"`
+	UserInfo
 }

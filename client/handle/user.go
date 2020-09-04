@@ -133,6 +133,13 @@ func (this *UserHandle) Login(userid int, pwd string) (err error) {
 		// fmt.Println(loginres)
 		if loginres.Code == 900 {
 
+			// init current user
+			curuser.Con = con
+			curuser.UserId = userid
+			curuser.UserStatus = base.UserOnline
+
+			fmt.Println("当前在线用户")
+
 			// 显示在线用户
 			for _, value := range loginres.Uids {
 
@@ -140,7 +147,14 @@ func (this *UserHandle) Login(userid int, pwd string) (err error) {
 					// 从列表中排除自己
 					continue
 				}
-				fmt.Println(value)
+				fmt.Println("user id:", value)
+
+				var ui *base.UserInfo = &base.UserInfo{
+					UserId: value,
+					UserStatus: base.UserOnline,
+
+				}
+				OnlineUser[value] = ui
 
 			}
 			fmt.Println("\n\n")
